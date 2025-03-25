@@ -34,3 +34,21 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    - name: Extract Version
+      run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+    - name: Build Docker Image (Multi-Stage)
+      run: |
+        docker build --build-arg JAR_FILE=target/*.jar -t myapp:${{ env.VERSION }} .
+        docker tag myapp:${{ env.VERSION }} myapp:latest
+
+    - name: Save Docker Image as Artifact
+      run: |
+        docker save myapp:${{ env.VERSION }} -o myapp.tar
+
+    - name: Upload Docker Image
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-image
+        path: myapp.tar
