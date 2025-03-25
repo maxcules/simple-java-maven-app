@@ -40,15 +40,15 @@ jobs:
 
     - name: Build Docker Image (Multi-Stage)
       run: |
-        docker build --build-arg JAR_FILE=$(ls target/*.jar) -t myapp:${{ env.VERSION }} .
-        docker tag myapp:${{ env.VERSION }} myapp:latest
+        docker build --build-arg JAR_FILE=$(ls target/*.jar) -t app:${{ env.VERSION }} .
+        docker tag app:${{ env.VERSION }} app:latest
 
     - name: Save Docker Image as Artifact
       run: |
-        docker save myapp:${{ env.VERSION }} -o myapp.tar
+        docker save app:${{ env.VERSION }} -o app-${{ env.VERSION }}.tar
 
     - name: Upload Docker Image
       uses: actions/upload-artifact@v4
       with:
-        name: docker-image
-        path: myapp.tar
+        name: app-${{ env.VERSION }}
+        path: app-${{ env.VERSION }}.tar
