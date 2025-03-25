@@ -29,3 +29,9 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    - name: Bump Version
+      id: bump
+      uses: nnichols/maven-version-bump-action@v3
+    - name: Print Version
+      run: "echo 'New Version: ${{steps.bump.outputs.version}}'"
