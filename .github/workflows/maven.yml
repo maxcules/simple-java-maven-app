@@ -31,7 +31,6 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Bump Version
-      id: bump
-      uses: nnichols/maven-version-bump-action@v3
+      run: mvn versions:set -DnewVersion=1.0.${{ github.run_number }}
     - name: Print Version
       run: "echo 'New Version: ${{steps.bump.outputs.version}}'"
