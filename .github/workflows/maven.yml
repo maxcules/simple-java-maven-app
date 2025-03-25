@@ -59,6 +59,9 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        tags: |
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.SHORT_VERSION }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
         labels: |
           org.opencontainers.image.source=${{ github.repository_url }}
