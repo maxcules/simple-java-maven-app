@@ -40,7 +40,7 @@ jobs:
 
     - name: Build Docker Image (Multi-Stage)
       run: |
-        docker build --build-arg JAR_FILE=target/*.jar -t myapp:${{ env.VERSION }} .
+        docker build --build-arg JAR_FILE=$(ls target/*.jar) -t myapp:${{ env.VERSION }} .
         docker tag myapp:${{ env.VERSION }} myapp:latest
 
     - name: Save Docker Image as Artifact
