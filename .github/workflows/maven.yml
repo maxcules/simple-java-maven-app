@@ -60,6 +60,6 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ env.REGISTRY }}/app:{{ env.VERSION }}
+          ${{ env.REGISTRY }}/app:${{ env.VERSION }}
         labels: |
           org.opencontainers.image.source=${{ github.repository_url }}
