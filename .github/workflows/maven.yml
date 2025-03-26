@@ -70,43 +70,42 @@ jobs:
           org.opencontainers.image.source=${{ github.repository_url }}
 
 
-      - name: Install SSH Client
-        run: sudo apt-get update && sudo apt-get install -y openssh-client
+    - name: Install SSH Client
+      run: sudo apt-get update && sudo apt-get install -y openssh-client
 
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ~/.ssh/ec2_key
-          chmod 600 ~/.ssh/ec2_key
-          cat >> ~/.ssh/config <<EOF
-          Host ec2
-            HostName ${{ secrets.EC2_HOST }}
-            User ${{ secrets.EC2_USER }}
-            IdentityFile ~/.ssh/ec2_key
-            StrictHostKeyChecking no
-          EOF
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ~/.ssh/ec2_key
+        chmod 600 ~/.ssh/ec2_key
+        cat >> ~/.ssh/config <<EOF
+        Host ec2
+          HostName ${{ secrets.EC2_HOST }}
+          User ${{ secrets.EC2_USER }}
+          IdentityFile ~/.ssh/ec2_key
+          StrictHostKeyChecking no
+        EOF
 
-      - name: Test Connection
-        run: ssh -v ec2 "echo 'SSH connection successful!'"
+    - name: Test Connection
+      run: ssh -v ec2 "echo 'SSH connection successful!'"
 
-      - name: Deploy Container
-        run: |
-          ssh -v ec2 /bin/bash <<'EOL'
-          # --- Debugging info ---
-          echo "EC2 Host: $(hostname)"
-          echo "Docker version: $(docker --version)"
-          echo "Current containers: $(docker ps -a)"
+    - name: Deploy Container
+      run: |
+        ssh -v ec2 /bin/bash <<'EOL'
+        # --- Debugging info ---
+        echo "EC2 Host: $(hostname)"
+        echo "Docker version: $(docker --version)"
+        echo "Current containers: $(docker ps -a)"
 
-          # Login to GHCR
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin || echo "GHCR login failed"
-            # Stop/remove old container
-            docker stop myapp || true
-            docker rm myapp || true
+        # Login to GHCR
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin || echo "GHCR login failed"
+        # Stop/remove old container
+        docker stop myapp || true
+        docker rm myapp || true
 
-            # Pull new image and run
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            docker run -d \
-              --name myapp \
-              -p 8080:8080 \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-
+        # Pull new image and run
+        docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        docker run -d \
+            --name myapp \
+            -p 8080:8080 \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
