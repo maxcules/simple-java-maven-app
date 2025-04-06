@@ -43,7 +43,7 @@ jobs:
       run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
     - name: Scan Dockerfile with Trivy
-      uses: aquasecurity/trivy-action@v0.11.2
+      uses: aquasecurity/trivy-action@0.17.0
       with:
         scan-type: config
         scan-ref: .
