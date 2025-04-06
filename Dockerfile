@@ -14,5 +14,8 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
+RUN useradd -m appuser
+USER appuser
+
 EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
