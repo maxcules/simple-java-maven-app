@@ -42,6 +42,15 @@ jobs:
     - name: Extract Version
       run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
+    - name: Scan Dockerfile with Trivy
+      uses: aquasecurity/trivy-action@v0.11.2
+      with:
+        scan-type: config
+        scan-ref: .
+        ignore-unfixed: true
+        exit-code: '1'
+        severity: CRITICAL,HIGH
+
     - name: Build Docker Image (Multi-Stage)
       run: |
         docker build --build-arg JAR_FILE=$(ls target/*.jar) -t app:${{ env.VERSION }} .
