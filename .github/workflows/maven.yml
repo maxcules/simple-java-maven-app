@@ -23,11 +23,15 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Dependency Review
-      uses: actions/dependency-review-action@v4
+    - name: Scan Maven dependencies with Trivy
+      uses: aquasecurity/trivy-action@v0.11.2
       with:
-        fail-on-severity: critical
-
+        scan-type: fs
+        scan-ref: .
+        scanners: vuln
+        format: table
+        severity: CRITICAL,HIGH
+        exit-code: 1
 
     - name: Bump Version
       id: bump
