@@ -23,6 +23,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Run Checkstyle (GitHub Action)
+      uses: checkstyle/checkstyle-action@v1
+
     - name: Scan Maven dependencies with Trivy
       uses: aquasecurity/trivy-action@0.17.0
       with:
