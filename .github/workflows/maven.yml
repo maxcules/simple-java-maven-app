@@ -11,7 +11,6 @@ on:
     branches: [ "master" ]
 
 jobs:
-  checkout:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -22,17 +21,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-  scanning:
-    runs-on: ubuntu-latest
-    steps:
+      - uses: actions/checkout@v4
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: critical
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
 
     - name: Bump Version
       id: bump
